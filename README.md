@@ -6,8 +6,8 @@ Github ecosystem steps:
 2. Clone in terminal to file directory
 3. git remote -v
 4. git remote add upstream "use the git repo address we had before"
-# Updating local repo:
-1. git pull origin master
+# Updating local repo to master:
+1. git pull upstream master
 # Committing Upstream:
 1. git add .
 2. git commit -m ""
