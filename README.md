@@ -11,6 +11,6 @@ Github ecosystem steps:
 # Committing Upstream:
 1. git add .
 2. git commit -m ""
-3. git status  #(make sure there are no gaps between your code and last push)
+3. git status    (make sure there are no gaps between your code and last push)
 4. git push
-5. then deal with pull requests
+5. then deal with pull requests https://help.github.com/en/github/collaborating-with-issues-and-pull-requests/creating-a-pull-request-from-a-fork
