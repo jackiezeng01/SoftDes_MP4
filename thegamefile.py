@@ -7,19 +7,40 @@ import cv2
 
 # this is the main file for the project with all of the classes and functions that will be called
 
-class Obstacles():
-#creates a class that for the obstacles
-    def __init__(self, x_position, y_position):
-        #initilizes each obstical with an x & y position
-    pass
-
+# hypothetical x positions of lanes.
+global left_lane = 50
+global middle_lane = 100
+global right_lane = 150
+global top_y = 0
 
 class Runner():
 #creates a class for the character in the game
-    def __init__(self, x_position=middle):
-    #initilizes the character with a starting x position (no y position because the background moves not the character)
+    def __init__(self, screen, x = middle_lane, y = 150):
+        #initilizes the character with a starting x position. y position is at the
+        #bottom of the page because the background moves not the character.
+    def draw(self):
+        #draws the character on the screen
+    def move(self, direction):
+        ''' Moves runner in the direction specified by the OpenCV camera
+            feedback. Changes the x location of the character to one of the
+            three global lane variables.
+
+            self: the runner
+            direction: string saying either "left", "right", or "no change"
+        '''
     pass
 
+class Obstacles():
+#creates a class that for the obstacles
+    def __init__(self, screen, x, y=0):
+        #initilizes each obstacle with an x (one of the three lanes) & y
+        #position
+    def draw(self):
+        #draws obstacle on the screen
+    def move(self):
+        #keeps obstacle on the same lane while increasing the y position so it
+        #moves down the screen towards the player.
+    pass
 
 class Timer():
 #creates a timer that serves
@@ -33,9 +54,41 @@ class Best_Time():
     pass
 
 
-def init_game():
-    pass
+class Game():
+    def __init__(self):
+        '''
 
+        '''
+        self.FPS = 25
+
+        pygame.init()
+
+        self.fpsClock = pygame.time.Clock()
+
+        self.background = pygame.image.load('background.jpg')
+        self.size = self.width, self.height = self.background.get_size()
+
+        self.screen = pygame.display.set_mode(self.size,0,32)
+
+        self.ball = Ball(self.screen, 100, 100)
+
+        self.player1 = Player(self.screen, 35, self.height/2)
+        self.player2 = Player(self.screen, self.width-35, self.height/2)
+
+        print self.screen.get_rect().center
+
+
+        font = pygame.font.SysFont("", 72)
+
+        self.text_paused = font.render("PAUSE", True, (255, 0, 0))
+
+        print self.text_paused.get_rect()
+
+        screen_rect = self.screen.get_rect()
+        self.text_rect = self.text_paused.get_rect()
+        self.text_rect.center = screen_rect.center
+
+        print self.text_rect
 
 def read_card():
     "if open cv reads left arrow"
@@ -44,24 +97,13 @@ def read_card():
         return "right"
     "if open cv does not read anything"
         return "stay"
-    pass    
-
-
-def move_left():
-    "if read_card returns left shift the runner to the lane dirrectly to the left of thier current position"
-    "if the runner is in the furthest left lane do not allow the runner to move further"
     pass
-
-
-def move_right():
-    "if read_card returns right shift the runner to the lane dirrectly to the right"
-    "if the runner is in the furthest right lane do not allow the runner to move further"
-    pass
-
 
 def generate_obstacles():
     "randomly generates obsticals for the runner to dodge"
     "as time passes it creates more obsticals"
+
+    if
     pass
 
 
@@ -72,17 +114,17 @@ def crash():
 test = True
 
 class Camera(): #not finished but close, lol
-    ''' 
+    '''
     Class containing all gathering of data from the Camera feed.
     designed to have minimal interpreting in this class and instead interface
     with another class to find the meaning in the image data.
     '''
     def __init__(self, left, right):
-    
+
         # initalize the feed
         self.cap = cv2.VideoCapture(0)
 
-        # create the ORB data from images to check the feed with 
+        # create the ORB data from images to check the feed with
         self.leftORB = init_templates(left)
         self.rightORB = init_template(right)
 
@@ -112,14 +154,14 @@ class Camera(): #not finished but close, lol
 
     def get_feed(self):
         '''
-        This function returns the vidnumORBseo feed after converting it to a grayscale for further interpreting 
+        This function returns the vidnumORBseo feed after converting it to a grayscale for further interpreting
         '''
 
         # while the camera may be on, the camera could be reading a file or feed type
         # that it cannot handle this double checks that the input type is correct.
         self.everythingGood, self.frame = cap.read()
         if self.everythingGood == True:
-            
+
             # Converting the Video frame into a grayscale image
             grayscale = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
             return grayscale
@@ -129,8 +171,8 @@ class Camera(): #not finished but close, lol
             # using the CannyEdge Detector to simply image and store it
             self.edge = cv2.Canny(image, EdgeThres[0], EdgeThres[1])
 
-            # using ORBs detection to 
-            self.orbprocessed = 
+            # using ORBs detection to
+            self.orbprocessed =
 
             # Since this uses a lot of external input a testing function is made to clarify
             # what it is that the edge dectectors are finding
@@ -146,21 +188,21 @@ class Camera(): #not finished but close, lol
                 break
 
 
-                
+
     def get_feed(self, EdgeThres = (100, 255), pMatches = 300, OrbThres = 90, t = True):
         '''
-        By inputing the desired threshold for the Canny Edge detector, 
-        as well as the number of ORBs for the templates, and the 
+        By inputing the desired threshold for the Canny Edge detector,
+        as well as the number of ORBs for the templates, and the
         threshold for the number of matches needed for a positive fit.
 
-        This function will return the data of the video feed converted into the 
+        This function will return the data of the video feed converted into the
         '''
-        
+
         everythingGood, frame = cap.read()
         # while the camera may be on, the camera could be reading a file or feed type
         # that it cannot handle this double checks that the input type is correct.
         if everythingGood == True:
-            
+
             # Converting the Video frame into a grayscale image
             grayscale = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
 
