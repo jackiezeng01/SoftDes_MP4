@@ -70,17 +70,17 @@ pass
 test = True
 
 class Camera(): #not finished but close, lol
-    ''' 
+    '''
     Class containing all gathering of data from the Camera feed.
     designed to have minimal interpreting in this class and instead interface
     with another class to find the meaning in the image data.
     '''
     def __init__(self, left, right):
-    
+
         # initalize the feed
         self.cap = cv2.VideoCapture(0)
 
-        # create the ORB data from images to check the feed with 
+        # create the ORB data from images to check the feed with
         self.leftORB = init_templates(left)
         self.rightORB = init_template(right)
 
@@ -110,14 +110,14 @@ class Camera(): #not finished but close, lol
 
     def get_feed(self):
         '''
-        This function returns the vidnumORBseo feed after converting it to a grayscale for further interpreting 
+        This function returns the vidnumORBseo feed after converting it to a grayscale for further interpreting
         '''
 
         # while the camera may be on, the camera could be reading a file or feed type
         # that it cannot handle this double checks that the input type is correct.
         self.everythingGood, self.frame = cap.read()
         if self.everythingGood == True:
-            
+
             # Converting the Video frame into a grayscale image
             grayscale = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
             return grayscale
@@ -127,8 +127,8 @@ class Camera(): #not finished but close, lol
             # using the CannyEdge Detector to simply image and store it
             self.edge = cv2.Canny(image, EdgeThres[0], EdgeThres[1])
 
-            # using ORBs detection to 
-            self.orbprocessed = 
+            # using ORBs detection to
+            self.orbprocessed =
 
             # Since this uses a lot of external input a testing function is made to clarify
             # what it is that the edge dectectors are finding
@@ -144,21 +144,21 @@ class Camera(): #not finished but close, lol
                 break
 
 
-                
+
     def get_feed(self, EdgeThres = (100, 255), pMatches = 300, OrbThres = 90, t = True):
         '''
-        By inputing the desired threshold for the Canny Edge detector, 
-        as well as the number of ORBs for the templates, and the 
+        By inputing the desired threshold for the Canny Edge detector,
+        as well as the number of ORBs for the templates, and the
         threshold for the number of matches needed for a positive fit.
 
-        This function will return the data of the video feed converted into the 
+        This function will return the data of the video feed converted into the
         '''
-        
+
         everythingGood, frame = cap.read()
         # while the camera may be on, the camera could be reading a file or feed type
         # that it cannot handle this double checks that the input type is correct.
         if everythingGood == True:
-            
+
             # Converting the Video frame into a grayscale image
             grayscale = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
 
