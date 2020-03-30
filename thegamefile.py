@@ -116,30 +116,7 @@ def read_card():
     # if open cv reads right arrow
         return "right"
     # if open cv does not read anything
-        return "stay"    
-
-
-def move_left():
-    # if read_card returns left shift the runner to the lane dirrectly to the left of thier current position
-    # if the runner is in the furthest left lane do not allow the runner to move further
-    pass
-
-
-def move_right():
-    # if read_card returns right shift the runner to the lane dirrectly to the right
-    # if the runner is in the furthest right lane do not allow the runner to move further
-    pass
-
-
-def generate_obstacles():
-    # randomly generates obsticals for the runner to dodge
-    # as time passes it creates more obsticals
-    pass
-
-
-def crash():
-    # when runner hits an obstical with 0 lives the game ends and the end screen shows
-    pass
+        return "stay"
 
 test = True
 
@@ -153,8 +130,8 @@ class Camera(): #not finished but close, lol
 
         # initalize the feed
         self.cap = cv2.VideoCapture(0)
-    
-        # create the ORB data from images to check the feed with 
+
+        # create the ORB data from images to check the feed with
         self.leftORB = init_templates(left)
         self.rightORB = init_template(right)
 
@@ -184,7 +161,7 @@ class Camera(): #not finished but close, lol
 
     def get_feed(self):
         '''
-        This function returns the video feed after converting it to a grayscale for further interpreting 
+        This function returns the video feed after converting it to a grayscale for further interpreting
         '''
 
         # while the camera may be on, the camera could be reading a file or feed type
@@ -201,7 +178,7 @@ class Camera(): #not finished but close, lol
             # using the CannyEdge Detector to simply image and store it
             self.edge = cv2.Canny(image, EdgeThres[0], EdgeThres[1])
 
-            # using ORBs detection to 
+            # using ORBs detection to
             self.orbprocessed = cv2.orbs_filter(image)
 
             # Since this uses a lot of external input a testing function is made to clarify
@@ -217,4 +194,3 @@ class Camera(): #not finished but close, lol
                 if cv2.waitKey(20) == ord('q'):
                     break
 def __main__():
-    
