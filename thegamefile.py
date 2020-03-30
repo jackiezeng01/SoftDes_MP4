@@ -1,3 +1,4 @@
+
 """
 Micro Project 4
 """
@@ -24,7 +25,6 @@ class Runner():
         '''
         initilizes the character with a starting x position. y position is at the
         Bottom of the page because the background moves and not the character.
-
         background: image
         x: initial x position (int)
         y: initial y position (int)
@@ -41,7 +41,6 @@ class Runner():
         Moves runner in the direction specified by the OpenCV camera
         feedback. Changes the x location of the character to one of the
         three global lane variables.
-
         direction: data from OpenCV that dictates left, right, or straight
             if direction == "left" and self.x != LEFT_LANE:
                 self.x += -50
@@ -63,7 +62,6 @@ class Obstacles():
         '''
         initilizes the obstacle with a starting x position. y position is at the
         top of the page because it will move downwards.
-
         background: image
         x: random lane that will be inputted when generated (int)
         y: initial y position (int)
@@ -84,7 +82,6 @@ class Obstacles():
 def redrawWindow():
     '''
     redraws elements so that it can update every frame
-
     draws the following:
     background
     Runner
@@ -98,7 +95,6 @@ class Game():
     def __init__(self):
         '''
         initializes attributes of the game:
-
         Frames per second
         Clock
         Background
