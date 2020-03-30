@@ -15,80 +15,100 @@ global top_y = 0
 
 class Runner():
 #creates a class for the character in the game
-    def __init__(self, screen, x = middle_lane, y = 150):
+    def __init__(self, screen, x = middle_lane, y = 150, lives = 3):
         #initilizes the character with a starting x position. y position is at the
         #bottom of the page because the background moves not the character.
+        pass
     def draw(self):
         #draws the character on the screen
-    def move(self, direction):
-        ''' Moves runner in the direction specified by the OpenCV camera
-            feedback. Changes the x location of the character to one of the
-            three global lane variables.
-
-            self: the runner
-            direction: string saying either "left", "right", or "no change"
-        '''
-    pass
+        pass
+    def move(self):
+        #Moves runner in the direction specified by the OpenCV camera
+        #feedback. Changes the x location of the character to one of the
+        #three global lane variables.
+        pass
+    def minus_life(self):
+        #Subtracts one from life of the Runner.
+        pass
 
 class Obstacles():
 #creates a class that for the obstacles
     def __init__(self, screen, x, y=0):
         #initilizes each obstacle with an x (one of the three lanes) & y
         #position
+        pass
     def draw(self):
         #draws obstacle on the screen
+        pass
     def move(self):
         #keeps obstacle on the same lane while increasing the y position so it
         #moves down the screen towards the player.
+        pass
+
+def redrawWindow():
+    '''
+    redraws elements so that it can update every frame
+
+    draws the following:
+    background
+    Runner
+    for every obstacle in the obstacles list, draw it in the window.
+    '''
+    #code drawing stuff.
+    pygame.display.update()
     pass
 
-class Timer():
-#creates a timer that serves
-    def __init__(self, minute=0, second=0, millisecond=0):
-
-    pass
-
-
-class Best_Time():
-#class to save the high score/best time
-    pass
-
+obstacles = [] #This stores all obstacles in a list and loops through the list
+#to draw each one
+pygame.time.set_timer(USEREVENT+1, random.randrange(2000, 3500)) # Will trigger
+# every 2 - 3.5 seconds. This is the timer that sets off obstacle generation.
 
 class Game():
     def __init__(self):
         '''
+        initializes attributes of the game:
 
+        frames per second
+        Clock
+        background
+        size of screen
+        creates Runner class
+        creates Obstacles class
         '''
-        self.FPS = 25
+    def run(self):
+        '''
+        runs the game.
+        '''
+        RUNNING = true
+        while RUNNING:
 
-        pygame.init()
+            #if lives is less than 0, then RUNNING becomes false
 
-        self.fpsClock = pygame.time.Clock()
+            redrawWindow() # updates frame with all of the sprites
 
-        self.background = pygame.image.load('background.jpg')
-        self.size = self.width, self.height = self.background.get_size()
+            #moves runner based on direction of open cv arrows
 
-        self.screen = pygame.display.set_mode(self.size,0,32)
+            #generate obstacles if userevent timer is true.
+            if event.type == USEREVENT+1:
+            r = random.randrange(0,2)
+            if r == 0:
+                obstacles.append(saw(810, 310, 64, 64))
+            elif r == 1:
+                obstacles.append(spike(810, 0, 48, 310))
 
-        self.ball = Ball(self.screen, 100, 100)
+            #moves obstacles: updates obstacle position or removes it if it
+            #goes off the screen.
+            for obstacle in obstacles:
+                 obstacle.y += 1.4
+                 if obstacle.x < obstacle.width * -1:
+                     # If our obstacle is off the screen we will remove it
+                     obstacles.pop(obstacles.index(obstacle))
 
-        self.player1 = Player(self.screen, 35, self.height/2)
-        self.player2 = Player(self.screen, self.width-35, self.height/2)
+            # insert code that manages collisions: if it touches the player
+            # then the obstacle deletes, the player loses a life, the player's
+            # turn starts over
 
-        print self.screen.get_rect().center
 
-
-        font = pygame.font.SysFont("", 72)
-
-        self.text_paused = font.render("PAUSE", True, (255, 0, 0))
-
-        print self.text_paused.get_rect()
-
-        screen_rect = self.screen.get_rect()
-        self.text_rect = self.text_paused.get_rect()
-        self.text_rect.center = screen_rect.center
-
-        print self.text_rect
 
 def read_card():
     "if open cv reads left arrow"
