@@ -8,9 +8,9 @@ import cv2
 # this is the main file for the project with all of the classes and functions that will be called
 
 # hypothetical x positions of lanes.
-global left_lane = 50
-global middle_lane = 100
-global right_lane = 150
+global LEFT_LANE = 50
+global MIDDLE_LANE = 100
+global RIGHT_LANE = 150
 global top_y = 0
 
 class Runner():
