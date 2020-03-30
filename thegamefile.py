@@ -7,34 +7,107 @@ import cv2
 
 # this is the main file for the project with all of the classes and functions that will be called
 
-class Obstacles():
-#creates a class that for the obstacles
-    def __init__(self, x_position, y_position):
-        #initilizes each obstical with an x & y position
-        pass
-
+# hypothetical x positions of lanes.
+global left_lane = 50
+global middle_lane = 100
+global right_lane = 150
+global top_y = 0
 
 class Runner():
 #creates a class for the character in the game
-    def __init__(self, x_position=middle):
-    #initilizes the character with a starting x position (no y position because the background moves not the character)
+    def __init__(self, screen, x = middle_lane, y = 150, lives = 3):
+        #initilizes the character with a starting x position. y position is at the
+        #bottom of the page because the background moves not the character.
+        pass
+    def draw(self):
+        #draws the character on the screen
+        pass
+    def move(self):
+        #Moves runner in the direction specified by the OpenCV camera
+        #feedback. Changes the x location of the character to one of the
+        #three global lane variables.
+        pass
+    def minus_life(self):
+        #Subtracts one from life of the Runner.
         pass
 
-
-class Timer():
-#creates a timer that serves
-    def __init__(self, minute=0, second=0, millisecond=0):
-
+class Obstacles():
+#creates a class that for the obstacles
+    def __init__(self, screen, x, y=0):
+        #initilizes each obstacle with an x (one of the three lanes) & y
+        #position
+        pass
+    def draw(self):
+        #draws obstacle on the screen
+        pass
+    def move(self):
+        #keeps obstacle on the same lane while increasing the y position so it
+        #moves down the screen towards the player.
         pass
 
+def redrawWindow():
+    '''
+    redraws elements so that it can update every frame
 
-class Best_Time():
-#class to save the high score/best time
+    draws the following:
+    background
+    Runner
+    for every obstacle in the obstacles list, draw it in the window.
+    '''
+    #code drawing stuff.
+    pygame.display.update()
     pass
 
+obstacles = [] #This stores all obstacles in a list and loops through the list
+#to draw each one
+pygame.time.set_timer(USEREVENT+1, random.randrange(2000, 3500)) # Will trigger
+# every 2 - 3.5 seconds. This is the timer that sets off obstacle generation.
 
-def init_game():
-    pass
+class Game():
+    def __init__(self):
+        '''
+        initializes attributes of the game:
+
+        frames per second
+        Clock
+        background
+        size of screen
+        creates Runner class
+        creates Obstacles class
+        '''
+    def run(self):
+        '''
+        runs the game.
+        '''
+        RUNNING = true
+        while RUNNING:
+
+            #if lives is less than 0, then RUNNING becomes false
+
+            redrawWindow() # updates frame with all of the sprites
+
+            #moves runner based on direction of open cv arrows
+
+            #generate obstacles if userevent timer is true.
+            if event.type == USEREVENT+1:
+            r = random.randrange(0,2)
+            if r == 0:
+                obstacles.append(saw(810, 310, 64, 64))
+            elif r == 1:
+                obstacles.append(spike(810, 0, 48, 310))
+
+            #moves obstacles: updates obstacle position or removes it if it
+            #goes off the screen.
+            for obstacle in obstacles:
+                 obstacle.y += 1.4
+                 if obstacle.x < obstacle.width * -1:
+                     # If our obstacle is off the screen we will remove it
+                     obstacles.pop(obstacles.index(obstacle))
+
+            # insert code that manages collisions: if it touches the player
+            # then the obstacle deletes, the player loses a life, the player's
+            # turn starts over
+
 
 
 def read_card():
@@ -71,13 +144,13 @@ def crash():
 test = True
 
 class Camera(): #not finished but close, lol
-    ''' 
+    '''
     Class containing all gathering of data from the Camera feed.
     designed to have minimal interpreting in this class and instead interface
     with another class to find the meaning in the image data.
     '''
     def __init__(self, left, right):
-    
+
         # initalize the feed
         self.cap = cv2.VideoCapture(0)
     
@@ -118,7 +191,7 @@ class Camera(): #not finished but close, lol
         # that it cannot handle this double checks that the input type is correct.
         self.everythingGood, self.frame = cap.read()
         if self.everythingGood == True:
-            
+
             # Converting the Video frame into a grayscale image
             self.grayscale = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
             return self.grayscale
@@ -144,3 +217,4 @@ class Camera(): #not finished but close, lol
                 if cv2.waitKey(20) == ord('q'):
                     break
 def __main__():
+    
