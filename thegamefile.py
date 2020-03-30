@@ -11,74 +11,38 @@ import cv2
 global LEFT_LANE = 50
 global MIDDLE_LANE = 100
 global RIGHT_LANE = 150
-global TOP_Y = 0
-global BOTTOM_Y = 0
-obstacles = [] #This stores all obstacles in a list and loops through the list
-#to draw each one
-pygame.time.set_timer(USEREVENT+1, random.randrange(2000, 3500)) # Will trigger
-# every 2 - 3.5 seconds. This is the timer that sets off obstacle generation.
+global top_y = 0
 
 class Runner():
 #creates a class for the character in the game
-    def __init__(self, background, x = MIDDLE_LANE, y = BOTTOM_Y, lives = 3):
-        '''
-        initilizes the character with a starting x position. y position is at the
-        Bottom of the page because the background moves and not the character.
-
-        background: image
-        x: initial x position (int)
-        y: initial y position (int)
-        lives: int
-        '''
+    def __init__(self, screen, x = middle_lane, y = 150, lives = 3):
+        #initilizes the character with a starting x position. y position is at the
+        #bottom of the page because the background moves not the character.
         pass
     def draw(self):
-        '''
-        Draws the character on the screen with the appropriate size and position.
-        '''
+        #draws the character on the screen
         pass
-    def move(self, direction):
-        '''
-        Moves runner in the direction specified by the OpenCV camera
-        feedback. Changes the x location of the character to one of the
-        three global lane variables.
-
-        direction: data from OpenCV that dictates left, right, or straight
-            if direction == "left" and self.x != LEFT_LANE:
-                self.x += -50
-            if direction == "right" and self.x != RIGHT_LANE:
-                self.x += 50
-            if direction == "straight":
-                pass
-        '''
+    def move(self):
+        #Moves runner in the direction specified by the OpenCV camera
+        #feedback. Changes the x location of the character to one of the
+        #three global lane variables.
         pass
     def minus_life(self):
-        '''
-        Subtracts one from life of the Runner.
-        '''
+        #Subtracts one from life of the Runner.
         pass
 
 class Obstacles():
 #creates a class that for the obstacles
-    def __init__(self, background, x, y=TOP_Y):
-        '''
-        initilizes the obstacle with a starting x position. y position is at the
-        top of the page because it will move downwards.
-
-        background: image
-        x: random lane that will be inputted when generated (int)
-        y: initial y position (int)
-        '''
+    def __init__(self, screen, x, y=0):
+        #initilizes each obstacle with an x (one of the three lanes) & y
+        #position
         pass
     def draw(self):
-        '''
-        draws obstacle on the screen
-        '''
+        #draws obstacle on the screen
         pass
     def move(self):
-        '''
-        keeps obstacle on the same lane while increasing the y position so it
-        moves down the screen towards the player.
-        '''
+        #keeps obstacle on the same lane while increasing the y position so it
+        #moves down the screen towards the player.
         pass
 
 def redrawWindow():
@@ -88,60 +52,63 @@ def redrawWindow():
     draws the following:
     background
     Runner
-    Loops through every obstacle in the obstacles list, draw it in the window.
+    for every obstacle in the obstacles list, draw it in the window.
     '''
     #code drawing stuff.
     pygame.display.update()
     pass
+
+obstacles = [] #This stores all obstacles in a list and loops through the list
+#to draw each one
+pygame.time.set_timer(USEREVENT+1, random.randrange(2000, 3500)) # Will trigger
+# every 2 - 3.5 seconds. This is the timer that sets off obstacle generation.
 
 class Game():
     def __init__(self):
         '''
         initializes attributes of the game:
 
-        Frames per second
+        frames per second
         Clock
-        Background
-        Size of screen
-        Creates Runner class
-        Creates Obstacles class
+        background
+        size of screen
+        creates Runner class
+        creates Obstacles class
         '''
-        Runner = Runner(background)
     def run(self):
         '''
-        Runs the game and updates frames
+        runs the game.
         '''
         RUNNING = true
         while RUNNING:
+
             #if lives is less than 0, then RUNNING becomes false
 
-            # updates frame with all of the new drawings
-            redrawWindow()
+            redrawWindow() # updates frame with all of the sprites
 
             #moves runner based on direction of open cv arrows
-            Runner.move(read_card())
 
             #generate obstacles if userevent timer is true.
             if event.type == USEREVENT+1:
-                r = random.randrange(0,3)
-                if r == 0:
-                    obstacles.append(Obstacles(background, x = LEFT_LANE))
-                elif r == 1:
-                    obstacles.append(Obstacles(background, x = MIDDLE_LANE))
-                elif r == 2:
-                    obstacles.append(Obstacles(background, x = RIGHT_LANE))
+            r = random.randrange(0,2)
+            if r == 0:
+                obstacles.append(saw(810, 310, 64, 64))
+            elif r == 1:
+                obstacles.append(spike(810, 0, 48, 310))
 
             #moves obstacles: updates obstacle position or removes it if it
             #goes off the screen.
             for obstacle in obstacles:
-                obstacles.move()
-                # If our obstacle is off the screen we will remove it
+                 obstacle.y += 1.4
                  if obstacle.x < obstacle.width * -1:
+                     # If our obstacle is off the screen we will remove it
                      obstacles.pop(obstacles.index(obstacle))
 
             # insert code that manages collisions: if it touches the player
             # then the obstacle deletes, the player loses a life, the player's
             # turn starts over
+
+
 
 def read_card():
     # if open cv reads left arrow
@@ -174,7 +141,7 @@ class Camera(): #not finished but close, lol
 
         # generate the ORBs templates for the left and right pointing arrows
 
-    def orbs_filter(self, temp):
+    def get_orbs(self, temp):
         # save the template image
         self.img = cv2.imread(temp, 0)
 
@@ -212,7 +179,8 @@ class Camera(): #not finished but close, lol
             self.edge = cv2.Canny(image, EdgeThres[0], EdgeThres[1])
 
             # using ORBs detection to
-            self.orbprocessed = cv2.orbs_filter(image)
+            cv2.get_orbs(image)
+            self.orbprocessed = cv2.get_orbs(image)
 
             # Since this uses a lot of external input a testing function is made to clarify
             # what it is that the edge dectectors are finding
