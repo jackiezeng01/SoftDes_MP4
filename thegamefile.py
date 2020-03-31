@@ -6,6 +6,8 @@ by declanketchum, jackiezeng01, & lxbtlr
 import pygame
 import cv2
 
+
+
 obstacles = [] #This stores all obstacles in a list and loops through the list
 #to draw each one
 pygame.time.set_timer(USEREVENT+1, random.randrange(2000, 3500)) # Will trigger
@@ -20,6 +22,7 @@ class Runner():
         background: image
         x: initial x position (int)
         y: initial y position (int)
+        the sprite will use the Runner.png file
         lives: int
         '''
         pass
@@ -53,6 +56,8 @@ class Obstacles():
         background: image
         x: random lane that will be inputted when generated (int)
         y: initial y position (int)
+        the sprite will use the Obstacle.png file
+
         '''
         pass
     def draw(self):
@@ -75,18 +80,13 @@ def redrawWindow():
     pygame.display.update()
     pass
 
-obstacles = [] #This stores all obstacles in a list and loops through the list
-#to draw each one
-pygame.time.set_timer(USEREVENT+1, random.randrange(2000, 3500)) # Will trigger
-# every 2 - 3.5 seconds. This is the timer that sets off obstacle generation.
-
 class Game():
     def __init__(self):
         '''
         initializes attributes of the game:
         Frames per second
         Clock
-        Background
+        Background -- which is Background.png
         Size of screen
         Creates Runner class
         Creates Obstacles class
