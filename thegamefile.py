@@ -6,7 +6,6 @@ by declanketchum, jackiezeng01, & lxbtlr
 import pygame
 import cv2
 
-# hypothetical x positions of lanes.
 obstacles = [] #This stores all obstacles in a list and loops through the list
 #to draw each one
 pygame.time.set_timer(USEREVENT+1, random.randrange(2000, 3500)) # Will trigger
@@ -25,9 +24,7 @@ class Runner():
         '''
         pass
     def draw(self):
-        '''
-        Draws the character on the screen with the appropriate size and position.
-        '''
+        #draws the character on the screen
         pass
     def move(self, direction):
         '''
@@ -44,9 +41,7 @@ class Runner():
             pass
         pass
     def minus_life(self):
-        '''
-        Subtracts one from life of the Runner.
-        '''
+        #Subtracts one from life of the Runner.
         pass
 
 class Obstacles():
@@ -61,15 +56,11 @@ class Obstacles():
         '''
         pass
     def draw(self):
-        '''
-        draws obstacle on the screen
-        '''
+        #draws obstacle on the screen
         pass
     def move(self):
-        '''
-        keeps obstacle on the same lane while increasing the y position so it
-        moves down the screen towards the player.
-        '''
+        #keeps obstacle on the same lane while increasing the y position so it
+        #moves down the screen towards the player.
         pass
 
 def redrawWindow():
@@ -78,11 +69,16 @@ def redrawWindow():
     draws the following:
     background
     Runner
-    Loops through every obstacle in the obstacles list, draw it in the window.
+    for every obstacle in the obstacles list, draw it in the window.
     '''
     #code drawing stuff.
     pygame.display.update()
     pass
+
+obstacles = [] #This stores all obstacles in a list and loops through the list
+#to draw each one
+pygame.time.set_timer(USEREVENT+1, random.randrange(2000, 3500)) # Will trigger
+# every 2 - 3.5 seconds. This is the timer that sets off obstacle generation.
 
 class Game():
     def __init__(self):
@@ -96,6 +92,7 @@ class Game():
         Creates Obstacles class
         
         '''
+        # hypothetical x positions of lanes.
         global LEFT_LANE = 50
         global MIDDLE_LANE = 100
         global RIGHT_LANE = 150
@@ -105,39 +102,37 @@ class Game():
         # (pygame being down prevented any other progress here)
     def run(self):
         '''
-        Runs the game and updates frames
+        runs the game.
         '''
         RUNNING = True
         while RUNNING:
+
             #if lives is less than 0, then RUNNING becomes false
 
-            # updates frame with all of the new drawings
-            redrawWindow()
+            redrawWindow() # updates frame with all of the sprites
 
             #moves runner based on direction of open cv arrows
-            Runner.move(read_card())
 
             #generate obstacles if userevent timer is true.
             if event.type == USEREVENT+1:
-                r = random.randrange(0,3)
-                if r == 0:
-                    obstacles.append(Obstacles(background, x = LEFT_LANE))
-                elif r == 1:
-                    obstacles.append(Obstacles(background, x = MIDDLE_LANE))
-                elif r == 2:
-                    obstacles.append(Obstacles(background, x = RIGHT_LANE))
+            r = random.randrange(0,2)
+            if r == 0:
+                obstacles.append(saw(810, 310, 64, 64))
+            elif r == 1:
+                obstacles.append(spike(810, 0, 48, 310))
 
             #moves obstacles: updates obstacle position or removes it if it
             #goes off the screen.
             for obstacle in obstacles:
-                obstacles.move()
-                # If our obstacle is off the screen we will remove it
+                 obstacle.y += 1.4
                  if obstacle.x < obstacle.width * -1:
+                     # If our obstacle is off the screen we will remove it
                      obstacles.pop(obstacles.index(obstacle))
 
             # insert code that manages collisions: if it touches the player
             # then the obstacle deletes, the player loses a life, the player's
             # turn starts over
+
 
 class Camera(): 
     '''
