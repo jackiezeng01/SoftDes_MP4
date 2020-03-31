@@ -1,3 +1,4 @@
+
 """
 Micro Project 4
 """
@@ -15,17 +16,32 @@ global top_y = 0
 
 class Runner():
 #creates a class for the character in the game
-    def __init__(self, screen, x = middle_lane, y = 150, lives = 3):
-        #initilizes the character with a starting x position. y position is at the
-        #bottom of the page because the background moves not the character.
+    def __init__(self, background, x = MIDDLE_LANE, y = BOTTOM_Y, lives = 3):
+        '''
+        initilizes the character with a starting x position. y position is at the
+        Bottom of the page because the background moves and not the character.
+        background: image
+        x: initial x position (int)
+        y: initial y position (int)
+        lives: int
+        '''
         pass
     def draw(self):
         #draws the character on the screen
         pass
-    def move(self):
-        #Moves runner in the direction specified by the OpenCV camera
-        #feedback. Changes the x location of the character to one of the
-        #three global lane variables.
+    def move(self, direction):
+        '''
+        Moves runner in the direction specified by the OpenCV camera
+        feedback. Changes the x location of the character to one of the
+        three global lane variables.
+        direction: data from OpenCV that dictates left, right, or straight
+            if direction == "left" and self.x != LEFT_LANE:
+                self.x += -50
+            if direction == "right" and self.x != RIGHT_LANE:
+                self.x += 50
+            if direction == "straight":
+                pass
+        '''
         pass
     def minus_life(self):
         #Subtracts one from life of the Runner.
@@ -33,9 +49,14 @@ class Runner():
 
 class Obstacles():
 #creates a class that for the obstacles
-    def __init__(self, screen, x, y=0):
-        #initilizes each obstacle with an x (one of the three lanes) & y
-        #position
+    def __init__(self, background, x, y=TOP_Y):
+        '''
+        initilizes the obstacle with a starting x position. y position is at the
+        top of the page because it will move downwards.
+        background: image
+        x: random lane that will be inputted when generated (int)
+        y: initial y position (int)
+        '''
         pass
     def draw(self):
         #draws obstacle on the screen
@@ -48,7 +69,6 @@ class Obstacles():
 def redrawWindow():
     '''
     redraws elements so that it can update every frame
-
     draws the following:
     background
     Runner
@@ -67,8 +87,7 @@ class Game():
     def __init__(self):
         '''
         initializes attributes of the game:
-
-        frames per second
+        Frames per second
         Clock
         background
         size of screen
