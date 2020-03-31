@@ -1,19 +1,12 @@
-
 """
 Micro Project 4
+by declanketchum, jackiezeng01, & lxbtlr
 """
 
 import pygame
 import cv2
 
-# this is the main file for the project with all of the classes and functions that will be called
-
 # hypothetical x positions of lanes.
-global LEFT_LANE = 50
-global MIDDLE_LANE = 100
-global RIGHT_LANE = 150
-global TOP_Y = 0
-global BOTTOM_Y = 0
 obstacles = [] #This stores all obstacles in a list and loops through the list
 #to draw each one
 pygame.time.set_timer(USEREVENT+1, random.randrange(2000, 3500)) # Will trigger
@@ -42,13 +35,13 @@ class Runner():
         feedback. Changes the x location of the character to one of the
         three global lane variables.
         direction: data from OpenCV that dictates left, right, or straight
-            if direction == "left" and self.x != LEFT_LANE:
-                self.x += -50
-            if direction == "right" and self.x != RIGHT_LANE:
-                self.x += 50
-            if direction == "straight":
-                pass
         '''
+        if direction == "left" and self.x != LEFT_LANE:
+            self.x += -50
+        if direction == "right" and self.x != RIGHT_LANE:
+            self.x += 50
+        if direction == "straight":
+            pass
         pass
     def minus_life(self):
         '''
@@ -101,13 +94,20 @@ class Game():
         Size of screen
         Creates Runner class
         Creates Obstacles class
+        
         '''
+        global LEFT_LANE = 50
+        global MIDDLE_LANE = 100
+        global RIGHT_LANE = 150
+        global TOP_Y = 0
+        global BOTTOM_Y = 0
         Runner = Runner(background)
+        # (pygame being down prevented any other progress here)
     def run(self):
         '''
         Runs the game and updates frames
         '''
-        RUNNING = true
+        RUNNING = True
         while RUNNING:
             #if lives is less than 0, then RUNNING becomes false
 
@@ -139,58 +139,81 @@ class Game():
             # then the obstacle deletes, the player loses a life, the player's
             # turn starts over
 
-def read_card():
-    # if open cv reads left arrow
-        return "left"
-    # if open cv reads right arrow
-        return "right"
-    # if open cv does not read anything
-        return "stay"
-
-test = True
-
-class Camera(): #not finished but close, lol
+class Camera(): 
     '''
     Class containing all gathering of data from the Camera feed.
     designed to have minimal interpreting in this class and instead interface
     with another class to find the meaning in the image data.
     '''
     def __init__(self, left, right):
-
+        ''' 
+        given the base 'right' and 'left' images, the function initializes all necessary pieces of opencv
+        as well as converts the images into SIFT templates
+        '''
         # initalize the feed
         self.cap = cv2.VideoCapture(0)
-
-        # create the ORB data from images to check the feed with
-        self.leftORB = init_templates(left)
-        self.rightORB = init_template(right)
 
         # check that camera is available
         if not (self.cap.isOpened()):
             print('No camera detected,\n please run with a Camera')
+        self.rightImage = cv2.imread(right, 0)
+        self.leftImage = cv2.imread(left, 0)
 
-        # generate the ORBs templates for the left and right pointing arrows
+        # initiating SIFT detector: SIFT being the feature detector
+        self.sift = cv2.SIFT()
 
-    def orbs_filter(self, temp):
-        # save the template image
-        self.img = cv2.imread(temp, 0)
+        # we will be using the FLANN index KDtree algorithm, which is marked by 0
+        self.FLANN_INDEX_KDTREE = 0
+        self.index_params = dict(algorithm = self.FLANN_INDEX_KDTREE, trees = 5)
+        self.search_params = dict(checks = 50)
 
-        # turn on ORB detector
-        self.orb = cv2.ORB_create()
+        # needed intialization of FLANN
+        self.flann = cv2.FlannBasedMatcher(self.index_params, self.search_params)
+        
+        # create the SIFT data from images to check the feed with
+        # kp = Keypoints of the image, Des = the descriptors of the keypoints
+        self.leftkp, self.leftDes = sift.detectAndCompute(self.leftImage,None)
+        self.rightkp, self.rightDes = sift.detectAndCompute(self.rightImage,None)
 
-        # find the keypoints with ORB
-        self.keypoints = orb.detect(self.img, None)
+    def detect_sign(self, videoFrame = self.get_feed()):
+        '''
+        using FLANN knn we're able to generate the unique features with SIFT for both of the templates and the incoming video feed
+        Next, we run KNN and on the features of the templates and the incoming video feed inorder to see:
+        1. whether one of the templates crosses one of the minimum thresholds, 
+        2. if more than one does, then check to see if one of them has a significantly greater number of matches
+        based entirely off of OpenCV's FLANN (only change is logic of comparing the sign templates)
+        https://bit.ly/2UtZMEL 
+        '''
+        
+        self.framekp, self.frameDes = sift.detectAndCompute(self.videoFrame,None)
+        # using nearest neighbor, we will find the matches between the left and right templates
+        self.leftMatches = flann.knnMatch(self.frameDes,self.leftDes,k=2)
+        self.rightMatches = flann.knnMatch(self.frameDes,self.rightDes,k=2)
 
-        # find the descriptors with ORB
-        self.keypoints, self.descriptor = orb.detectAndCompute(self.img, self.keypoints)
+        # good stores all the *good* matches
+        self.goodLeft = []
+        self.goodRight = []
 
-        # draw keypoints' location
-        self.orbtemplate = cv2.drawKeypoints(self.img, self.keypoints, None, color=(0,255,0), flags=0)
+        # use lowe's ratio test to evaluate matches
+        for m,n in self.leftMatches:
+            if m.distance < 0.7*n.distance:
+                self.goodLeft.append(m)
+        for m,n in self.rightMatches:
+            if m.distance < 0.7*n.distance:
+                self.goodRight.append(m)
 
-        return self.orbtemplate
+        # threshold of matches necessary: out of 50 possible features we expect at least 20 to be present
+        self.minMatchCount = 20
+        if (len(self.goodRight) > self.minMatchCount) and (len(self.goodLeft) <= self.minMatchCount):
+            return "left"
+        if (len(self.goodLeft) > self.minMatchCount and (len(self.gootRight) <= self.minMatchCount):
+            return "right"
+        else:
+            return "straight"
 
     def get_feed(self):
         '''
-        This function returns the video feed after converting it to a grayscale for further interpreting
+        This function returns the video feed after converting it to grayscale for further interpreting
         '''
 
         # while the camera may be on, the camera could be reading a file or feed type
@@ -202,24 +225,5 @@ class Camera(): #not finished but close, lol
             self.grayscale = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
             return self.grayscale
 
-    def image_converter(self, image, EdgeThres = (100, 255), pMatches = 300):
-
-            # using the CannyEdge Detector to simply image and store it
-            self.edge = cv2.Canny(image, EdgeThres[0], EdgeThres[1])
-
-            # using ORBs detection to
-            self.orbprocessed = cv2.orbs_filter(image)
-
-            # Since this uses a lot of external input a testing function is made to clarify
-            # what it is that the edge dectectors are finding
-            if test:
-                # Unfiltered Video Feed
-                cv2.imshow('Real', self.frame)
-                # Filtered Video Feed
-                cv2.imshow('Edge', self.edge)
-                # ORB filtered Video Feed
-                cv2.imshow('ORBs', self.orbprocessed)
-                # Escape the Video feed, and properly(?) close the windows/camera
-                if cv2.waitKey(20) == ord('q'):
-                    break
 def __main__():
+    game = Game().run()
